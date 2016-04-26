@@ -3,11 +3,11 @@
  */
 var mysql=require("mysql");
 var pool = mysql.createPool({
-    host: 'localhost',
+    host: 'yinzhennan.vicp.net',
     user: 'vw',
     password: 'qweqwe',
     database: 'vw',
-    port: '3306'
+    port: '20184'
 });
 
 var query=function(sql,callback){

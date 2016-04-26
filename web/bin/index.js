@@ -8,11 +8,11 @@ var requestHandlers = require("./requestHandlers");
 var handle ={}
 handle["/"]= requestHandlers.start;
 handle["/start"]= requestHandlers.start;
-handle["/upload"]= requestHandlers.upload;
 
 handle["/show"]= requestHandlers.show;
 handle["/query"]= requestHandlers.query;
 handle["/excel"]= requestHandlers.excel;
 handle["/httpGet"]= requestHandlers.httpGet;
 
-server.start(router.route,handle);
+//server.start(router.route,handle);
+requestHandlers.httpGet();
