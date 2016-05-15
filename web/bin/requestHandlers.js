@@ -3,15 +3,17 @@
  */
 var querystring = require("querystring");
 var fs = require("fs");
-var formidable = require("formidable");
 var mysql = require("./lib/mysql.js");
 var wordUtil = require("./lib/wordUtil.js");
 var deasync = require('deasync');
 
-var jsdom = require("jsdom");
 var jquery = fs.readFileSync("./lib/jquery.js", "utf-8");
 
-var xlsx = require("node-xlsx");
+var jsdom = require("jsdom");
+
+var shttps=require('socks5-https-client')
+
+//var xlsx = require("node-xlsx");
 
 function start(response, request) {
     console.log("Request handler 'start' was called.");
@@ -35,20 +37,6 @@ function start(response, request) {
     response.end();
 }
 
-function upload(response, request) {
-    console.log("Request handler 'upload' was called.");
-    var form = new formidable.IncomingForm();
-    form.uploadDir = 'e:/tmp';
-    console.log("about to parse");
-    form.parse(request, function (error, fields, files) {
-        console.log("parsing done");
-        fs.renameSync(files.upload.path, "/tmp/test.png");
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.write("received image:<br/>");
-        response.write("<img src='/show' />");
-        response.end();
-    });
-}
 function show(response) {
     console.log("Request handler 'show' was called.");
     fs.readFile("/tmp/test.png", "binary", function (error, file) {
@@ -104,38 +92,96 @@ function excel(response, request) {
 
 }
 function httpGet(response, request) {
+    // shttps.get({
+    //     hostname:"ipv4.google.com",
+    //     path:"/sorry/IndexRedirect?continue=https://www.google.com/search%3Fnum%3D1%26q%3Dduplicator&q=CGMSBKxgcWMY7IbhuAUiGQDxp4NLtTpbLmxy39ATOwGfMTV6LzhJ2-Y",
+    //
+    //     headers:{
+    //         'avail-dictionary':'x0q89Mik',
+    //         'x-client-data':'CI22yQEIorbJAQjBtskBCP2VygE=',
+    //         'upgrade-insecure-requests':1,
+    //         'user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
+    //         cookie:
+    //             'SID=LgPEGaaCnVTZgii71ISWONbYNhYnPyeHYb5ZlmQOFACHEL6B-EpCVLdK9rbk_pGZh9XCfw.; HSID=AfNWoRwg_PP1SeYll; SSID=AlxO7tm3Q21OEKfIS; APISID=dpRKg33qgr18jt-0/Ao8i4lZ4pYjeCYd_P; SAPISID=e-ULnZ-1OIqYdipz/Az0E-32RuUqSZayO-; NID=78=GBeo8NhqrU2PuoVSMLcG3Y1rR0je5MOwA_m5lst0oPEiRRaN8QWbvrt10GMeDl9eZ9xfGcVpSAhRaj-tt4v9WBOG2AE184--IyNc_03ayi4hushR8t29nKTdII-9ereqxF_kUhFQhcSN8eFIId1diUIUHf4kOO069XeMJrsXah3NV_MsyuTWYehYj5AFzdkxlE6NpPMB9qNvRBEMfOPSoLyuvWyObm7eYjrJLkJrPqU-XdDZ9kvhhORRpOCWbADh5_BWBFrXa2txOGMApb4RmyrM; DV=Mii9ru9QPHMyoonTy6n6obpdK4FmqCoiL3hKVkQHHAAAAFrHmt2hTSuuJAAAAA; GOOGLE_ABUSE_EXEMPTION=ID=3e1f5c3dcfca6d85:TM=1461149210:C=c:IP=172.96.113.99-:S=APGng0sxtALoVCBH5HLN9p3m1qyI4EJhtQ'
+    //
+    //
+    //
+    //     },
+    //     rejectUnauthorized: true // This is the default.
+    // }, function(res) {
+    //     res.setEncoding('utf8');
+    //     var html_txt='';
+    //     res.addListener("data", function(postDataChunk) {
+    //         html_txt += postDataChunk;
+    //     });
+    //     res.addListener("end", function() {
+    //         jsdom.env({
+    //             html: html_txt,
+    //             src: [jquery],
+    //             proxy: process.env.https_proxy,
+    //             done: function (err, window) {
+    //                 var $ = window.$;
+    //                 var num = $("#resultStats").text().replace(/[^0-9]/g,'');
+    //                 if(num.length<4){
+    //                     num=1000;
+    //                 }
+    //                 html_txt=html_txt.replace('img src="','img src="https://ipv4.google.com');
+    //                 html_txt=html_txt.replace('CaptchaRedirect','https://ipv4.google.com/sorry/CaptchaRedirect');
+    //
+    //                 //func(word,num.substr(0,num.length-3));
+    //                 response.writeHead(200, {"Content-Type": "text/html;charset=utf-8"});
+    //                 response.write(html_txt + "\n");
+    //                 response.end();
+    //             }
+    //         });
+    //     });
+    // });
+    // return;
 
-
-    mysql.query("select * from vocab where frequency=0", function (error, vals, fields) {
+    mysql.query("select * from vocab where frequency=0 limit 20", function (error, vals, fields) {
         if (error) {
-            response.writeHead(500, {"Content-Type": "text/plain;charset=utf-8"});
-            response.write(error + "\n");
-            response.end();
+            // response.writeHead(500, {"Content-Type": "text/plain;charset=utf-8"});
+            // response.write(error + "\n");
+            // response.end();
+            console.log(error);
+            httpGet();
         } else {
-            response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8"});
+            //response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8"});
             //response.write(JSON.stringify(vals)+"\n");
             var current_num = 0;
-
+            var error_msg="";
             for (var index_w in vals) {
-                // try {
+                try {
                     current_num++;
                     var word = vals[index_w].word;
-                    wordUtil.getFreq(word, function (word, num) {
+                    wordUtil.getFreq(word, response, function (word, num) {
+
+                        if("error"==word){
+                            error_msg = "error num";
+                            return false;
+                        }
                         current_num--;
                         console.log(word);
                         console.log(num);
                         mysql.run("update vocab set frequency=" + num + " where word=" + escape_sql(word));
                     });
-                    while (current_num > 1) {
+                    if(error_msg){
+                        return;
+                    }
+                    while (current_num > 0) {
                         deasync.runLoopOnce();
                     }
-                // } catch (e) {
-                //     console.log(e.toString());
-                // }
+                } catch (e) {
+                    var message = e.toString();
+                    console.log(message);
+                    if(message.indexOf("num")>0){
+                        return;
+                    }
+                }
             }
 
-            response.write("完成\n");
-            response.end();
+            // response.write("完成\n");
+            // response.end();
         }
     });
 
@@ -149,7 +195,6 @@ function escape_sql(word) {
     }
 }
 exports.start = start;
-exports.upload = upload;
 exports.show = show;
 exports.query = query;
 exports.excel = excel;
