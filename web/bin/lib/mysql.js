@@ -9,6 +9,14 @@ var pool = mysql.createPool({
     database: 'vw',
     port: '3306'
 });
+// var pool = mysql.createPool({
+//     host: 'yinzhennan.vicp.net',
+//     user: 'vw',
+//     password: 'qweqwe',
+//     database: 'vw',
+//     port: '20184'
+// });
+
 
 var query=function(sql,callback){
     pool.getConnection(function(err,conn){
@@ -38,5 +46,13 @@ var run=function(sql){
         }
     });
 }
+function escape_sql(word) {
+    if (word) {
+        return "'" + word.replace("'", "\\'") + "'";
+    } else {
+        return "null";
+    }
+}
 exports.query = query;
 exports.run = run;
+exports.escape = escape_sql;
