@@ -1,6 +1,3 @@
-/**
- * Created by yinzhennan on 2016/4/10.
- */
 function route(handle,pathname, response, request){
     console.log("About to route a request for "+ pathname);
     var pathArray = pathname.split("/");
@@ -9,7 +6,7 @@ function route(handle,pathname, response, request){
         if(!pathArray[i]){continue}
         handle = handle["/"+pathArray[i]];
         if(typeof handle==='object'){
-            continue;
+            
         }else if(typeof handle==='function'){
             try {
                 response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8"});
