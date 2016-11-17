@@ -1,12 +1,12 @@
 /**
- * Created by yinzhennan on 2016/4/10.
+ * 入口
  */
 var server = require("./server");
 var router = require("./router");
 var requestHandlers = require("./requestHandlers");
 var vocabService = require("./service/vocabService");
 
-var handle ={}
+var handle ={};
 handle["/"]= requestHandlers.start;
 handle["/start"]= requestHandlers.start;
 
